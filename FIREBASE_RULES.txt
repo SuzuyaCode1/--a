@@ -1,0 +1,41 @@
+/**
+ * Firebase Firestore Security Rules
+ * 
+ * HOW TO SET UP:
+ * 1. Go to Firebase Console → Firestore Database → Rules
+ * 2. Replace existing rules with the code below
+ * 3. Click "Publish"
+ * 
+ * These rules allow:
+ * - Anonymous users to CREATE new documents in consultation_requests and call_requests
+ * - Only allow READ if user is authenticated (for admin panel later)
+ * - Prevent DELETE/UPDATE by users
+ */
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow anonymous users to submit consultation requests
+    match /consultation_requests/{document=**} {
+      allow create: if true;
+      allow read, write: if request.auth != null;
+    }
+    
+    // Allow anonymous users to submit call requests
+    match /call_requests/{document=**} {
+      allow create: if true;
+      allow read, write: if request.auth != null;
+    }
+    
+    // Product orders (for admin panel)
+    match /product_orders/{document=**} {
+      allow create: if request.auth != null;
+      allow read, write: if request.auth != null;
+    }
+    
+    // Default deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

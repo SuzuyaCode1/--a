@@ -1,3 +1,6 @@
+// Import Firebase functions
+import { sendConsultationRequest, sendCallRequest } from './firebase-functions.js';
+
 const callButton = document.getElementById("callButton");
 const callModal = document.getElementById("callModal");
 const closeModal = document.getElementById("closeModal");
@@ -5,6 +8,9 @@ const cancelButton = document.getElementById("cancelButton");
 const callForm = document.getElementById("callForm");
 const callMessage = document.getElementById("callMessage");
 const languageButtons = document.querySelectorAll(".lang-btn");
+
+// Get all contact forms
+const contactForms = document.querySelectorAll(".contact-form");
 
 const translations = {
   uk: {
@@ -230,7 +236,7 @@ if (cancelButton) {
 }
 
 if (callForm) {
-  callForm.addEventListener("submit", (event) => {
+  callForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = new FormData(callForm);
     const phone = data.get("phone")?.toString().trim();
@@ -238,8 +244,61 @@ if (callForm) {
       callMessage.textContent = "Будь ласка, введіть номер телефону";
       return;
     }
-    callMessage.textContent = "Дякуємо! Ми зв'яжемося з вами найближчим часом.";
-    setTimeout(closeModalWindow, 1800);
+    
+    callMessage.textContent = "Відправляємо...";
+    
+    const result = await sendCallRequest({ phone });
+    
+    if (result.success) {
+      callMessage.textContent = "Дякуємо! Ми зв'яжемося з вами найближчим часом.";
+      callForm.reset();
+      setTimeout(closeModalWindow, 1800);
+    } else {
+      callMessage.textContent = "Виникла помилка. Спробуйте ще раз.";
+      console.error(result.error);
+    }
+  });
+}
+
+// Handle all contact forms
+if (contactForms.length) {
+  contactForms.forEach((form) => {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      
+      const formData = new FormData(form);
+      const name = formData.get("name")?.toString().trim();
+      const phone = formData.get("phone")?.toString().trim();
+      const car = formData.get("car")?.toString().trim();
+      
+      // Validate
+      if (!name || !phone || !car) {
+        alert("Будь ласка, заповніть всі поля");
+        return;
+      }
+      
+      // Get submit button
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalText = submitButton.textContent;
+      submitButton.disabled = true;
+      submitButton.textContent = "Відправляємо...";
+      
+      const result = await sendConsultationRequest({ name, phone, car });
+      
+      if (result.success) {
+        submitButton.textContent = "✓ Відправлено!";
+        form.reset();
+        setTimeout(() => {
+          submitButton.disabled = false;
+          submitButton.textContent = originalText;
+        }, 2000);
+      } else {
+        alert("Виникла помилка. Спробуйте ще раз.");
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+        console.error(result.error);
+      }
+    });
   });
 }
 
