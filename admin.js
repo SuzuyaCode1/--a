@@ -1,3 +1,5 @@
+import { db, collection, getDocs, query, orderBy } from './firebase-config.js';
+
 const STORAGE_KEY = "autoGlassCatalog";
 const loginForm = document.getElementById("loginForm");
 const loginMessage = document.getElementById("loginMessage");
@@ -6,6 +8,7 @@ const adminSection = document.getElementById("adminSection");
 const form = document.getElementById("productForm");
 const formMessage = document.getElementById("formMessage");
 const adminList = document.getElementById("adminList");
+const callRequestsList = document.getElementById("callRequestsList");
 
 const ADMIN_CREDENTIALS = {
   username: "1",
@@ -94,6 +97,38 @@ function renderAdminList() {
   });
 }
 
+async function loadCallRequests() {
+  if (!callRequestsList) return;
+
+  callRequestsList.innerHTML = '<div class="empty-state">Завантаження заявок...</div>';
+
+  try {
+    const q = query(collection(db, "call_requests"), orderBy("timestamp", "desc"));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      callRequestsList.innerHTML = '<div class="empty-state">Поки що немає заявок на дзвінок.</div>';
+      return;
+    }
+
+    callRequestsList.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const item = document.createElement("div");
+      item.className = "admin-item";
+      item.innerHTML = `
+        <strong>Номер:</strong> ${data.phone || "-"}<br />
+        <strong>Статус:</strong> ${data.status || "новий"}<br />
+        <strong>Час:</strong> ${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString('uk-UA') : "-"}
+      `;
+      callRequestsList.appendChild(item);
+    });
+  } catch (error) {
+    console.error("Error loading call requests:", error);
+    callRequestsList.innerHTML = '<div class="empty-state">Не вдалося завантажити заявки.</div>';
+  }
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   const data = new FormData(form);
@@ -121,7 +156,7 @@ form.addEventListener("submit", (event) => {
   formMessage.textContent = "Товар додано до каталогу";
 });
 
-loginForm.addEventListener("submit", (event) => {
+loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const data = new FormData(loginForm);
   const username = data.get("username")?.toString().trim();
@@ -131,6 +166,7 @@ loginForm.addEventListener("submit", (event) => {
     loginSection.classList.add("hidden");
     adminSection.classList.remove("hidden");
     renderAdminList();
+    await loadCallRequests();
     loginMessage.textContent = "";
     return;
   }

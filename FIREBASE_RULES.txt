@@ -21,10 +21,11 @@ service cloud.firestore {
       allow read, write: if request.auth != null;
     }
     
-    // Allow anonymous users to submit call requests
+    // Allow anonymous users to submit call requests and allow admin page to read them
     match /call_requests/{document=**} {
       allow create: if true;
-      allow read, write: if request.auth != null;
+      allow read: if true;
+      allow update, delete: if false;
     }
     
     // Product orders (for admin panel)
