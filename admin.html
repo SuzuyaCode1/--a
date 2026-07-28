@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Адмінка — автоскло</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar white-topbar">
+      <div class="topbar-inner">
+        <div class="brand"><a href="index.html"><img src="logo.png" alt="Pilkington" class="header-logo" /></a></div>
+
+        <div class="topbar-center">
+          <button class="btn btn-primary btn-square" id="callButton" data-key="orderCall">Замовити дзвінок</button>
+        </div>
+
+        <div class="topbar-right">
+          <div class="topbar-contacts">
+            <a href="tel:+380674079894" class="topbar-phone">
+              <span class="topbar-phone-number">+38(067)-407-98-94</span>
+              <span class="topbar-phone-note" data-key="topbarRetailLabel">Менеджер по роздрібній торгівлі</span>
+            </a>
+            <a href="tel:+380678121414" class="topbar-phone">
+              <span class="topbar-phone-number">+38(067)-812-14-14</span>
+              <span class="topbar-phone-note" data-key="topbarWholesaleLabel">Менеджер по оптовій торгівлі</span>
+            </a>
+          </div>
+          <div class="language-switcher" aria-label="Вибір мови">
+            <span class="sr-only">Мова</span>
+            <div class="lang-buttons">
+              <button type="button" class="lang-btn active" data-lang="uk" aria-label="Українська">
+                <img src="ua-uk.png" alt="UA" />
+              </button>
+              <button type="button" class="lang-btn" data-lang="en" aria-label="English">
+                <img src="amerika.png" alt="EN" />
+              </button>
+              <button type="button" class="lang-btn" data-lang="pl" aria-label="Polski">
+                <img src="pl.png" alt="PL" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="section admin-page">
+      <div id="loginSection" class="login-section">
+        <div class="login-box">
+          <h2>Вхід до адмінки</h2>
+          <p>Введіть логін та пароль, щоб перейти до управління товарами.</p>
+          <form id="loginForm" class="admin-form">
+            <label>
+              Логін
+              <input type="text" name="username" placeholder="admin" required />
+            </label>
+            <label>
+              Пароль
+              <input type="password" name="password" placeholder="password" required />
+            </label>
+            <button class="btn" type="submit">Увійти</button>
+            <p id="loginMessage" class="form-message" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+
+      <div id="adminSection" class="admin-layout hidden">
+        <form id="productForm" class="admin-form">
+          <label>
+            Тип скла
+            <select name="title" required>
+              <option value="" disabled selected>Оберіть тип скла</option>
+              <option value="Лобове скло">Лобове скло</option>
+              <option value="Заднє скло">Заднє скло</option>
+              <option value="Бокове скло">Бокове скло</option>
+              <option value="Дверне скло">Дверне скло</option>
+              <option value="Кришка багажника">Кришка багажника</option>
+            </select>
+          </label>
+
+          <label>
+            Автомобіль
+            <input type="text" name="car" placeholder="Toyota Corolla" required />
+          </label>
+
+          <label>
+            Розмір
+            <input type="text" name="size" placeholder="1900x700" required />
+          </label>
+
+          <label>
+            Гарантія
+            <input type="text" name="warranty" placeholder="12 місяців" required />
+          </label>
+
+          <label>
+            Ціна
+            <input type="number" name="price" min="0" step="0.01" placeholder="4500" required />
+          </label>
+
+          <label>
+            Ціна установки
+            <input type="number" name="installationPrice" min="0" step="0.01" placeholder="1500" required />
+          </label>
+
+          <label>
+            Посилання на фото
+            <input type="url" name="image" placeholder="https://..." />
+          </label>
+
+          <button class="btn" type="submit">Додати товар</button>
+          <p id="formMessage" class="form-message" aria-live="polite"></p>
+        </form>
+
+        <div class="admin-panel">
+          <h3>Товари в каталозі</h3>
+          <div id="adminList" class="admin-list"></div>
+        </div>
+      </div>
+    </main>
+
+    <div id="callModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="callModalTitle">
+      <div class="modal">
+        <button class="modal-close" id="closeModal" aria-label="Закрити">×</button>
+        <h2 id="callModalTitle" data-key="orderCall">Замовити дзвінок</h2>
+        <p class="modal-description" data-key="modalDescription">Введіть номер телефону, щоб менеджер міг зателефонувати вам.</p>
+        <form id="callForm" class="modal-form">
+          <label>
+            <span data-key="phoneNumber">Номер телефону</span>
+            <input type="tel" name="phone" placeholder="+380 67 000 00 00" required />
+          </label>
+          <div class="modal-buttons">
+            <button class="btn btn-primary" type="submit" data-key="send">Відправити</button>
+            <button class="btn btn-secondary" type="button" id="cancelButton" data-key="cancel">Відмінити</button>
+          </div>
+          <p id="callMessage" class="form-message"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

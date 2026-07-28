@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Автоскло — каталог</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar white-topbar">
+      <div class="topbar-inner">
+        <div class="brand"><a href="index.html"><img src="logo.png" alt="Pilkington" class="header-logo" /></a></div>
+
+        <div class="topbar-center">
+          <button class="btn btn-primary btn-square" id="callButton" data-key="orderCall">Замовити дзвінок</button>
+        </div>
+
+        <div class="topbar-right">
+          <div class="topbar-contacts">
+            <a href="tel:+380674079894" class="topbar-phone">
+              <span class="topbar-phone-number">+38(067)-407-98-94</span>
+              <span class="topbar-phone-note" data-key="topbarRetailLabel">Менеджер по роздрібній торгівлі</span>
+            </a>
+            <a href="tel:+380678121414" class="topbar-phone">
+              <span class="topbar-phone-number">+38(067)-812-14-14</span>
+              <span class="topbar-phone-note" data-key="topbarWholesaleLabel">Менеджер по оптовій торгівлі</span>
+            </a>
+          </div>
+          <div class="language-switcher" aria-label="Вибір мови">
+            <span class="sr-only">Мова</span>
+            <div class="lang-buttons">
+              <button type="button" class="lang-btn active" data-lang="uk" aria-label="Українська">
+                <img src="ua-uk.png" alt="UA" />
+              </button>
+              <button type="button" class="lang-btn" data-lang="en" aria-label="English">
+                <img src="amerika.png" alt="EN" />
+              </button>
+              <button type="button" class="lang-btn" data-lang="pl" aria-label="Polski">
+                <img src="pl.png" alt="PL" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="catalog" class="section">
+        <div class="section-heading">
+          <p class="section-label">Каталог</p>
+          <h2>Автоскло в наявності та під замовлення</h2>
+        </div>
+        <div id="productsGrid" class="products-grid"></div>
+      </section>
+    </main>
+
+    <div id="callModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="callModalTitle">
+      <div class="modal">
+        <button class="modal-close" id="closeModal" aria-label="Закрити">×</button>
+        <h2 id="callModalTitle" data-key="orderCall">Замовити дзвінок</h2>
+        <p class="modal-description" data-key="modalDescription">Введіть номер телефону, щоб менеджер міг зателефонувати вам.</p>
+        <form id="callForm" class="modal-form">
+          <label>
+            <span data-key="phoneNumber">Номер телефону</span>
+            <input type="tel" name="phone" placeholder="+380 67 000 00 00" required />
+          </label>
+          <div class="modal-buttons">
+            <button class="btn btn-primary" type="submit" data-key="send">Відправити</button>
+            <button class="btn btn-secondary" type="button" id="cancelButton" data-key="cancel">Відмінити</button>
+          </div>
+          <p id="callMessage" class="form-message"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

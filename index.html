@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>АВТОСКЛО</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar white-topbar">
+      <div class="topbar-inner">
+        <div class="brand"><img src="logo.png" alt="Pilkington" class="header-logo" /></div>
+
+        <div class="topbar-center">
+          <button class="btn btn-primary btn-square" id="callButton" data-key="orderCall">Замовити дзвінок</button>
+        </div>
+
+        <div class="topbar-right">
+          <div class="topbar-contacts">
+            <a href="tel:+380674079894" class="topbar-phone">
+              <span class="topbar-phone-number">+38(067)-407-98-94</span>
+              <span class="topbar-phone-note" data-key="topbarRetailLabel">Менеджер по роздрібній торгівлі</span>
+            </a>
+            <a href="tel:+380678121414" class="topbar-phone">
+              <span class="topbar-phone-number">+38(067)-812-14-14</span>
+              <span class="topbar-phone-note" data-key="topbarWholesaleLabel">Менеджер по оптовій торгівлі</span>
+            </a>
+          </div>
+          <div class="language-switcher" aria-label="Вибір мови">
+            <span class="sr-only">Мова</span>
+            <div class="lang-buttons">
+              <button type="button" class="lang-btn active" data-lang="uk" aria-label="Українська">
+                <img src="ua-uk.png" alt="UA" />
+              </button>
+              <button type="button" class="lang-btn" data-lang="en" aria-label="English">
+                <img src="amerika.png" alt="EN" />
+              </button>
+              <button type="button" class="lang-btn" data-lang="pl" aria-label="Polski">
+                <img src="pl.png" alt="PL" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="banner-hero">
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+          <p class="banner-title" data-key="bannerTitle">Доставимо автомобільне скло в будь-яку точку України на будь-які види авто</p>
+          <a class="btn btn-primary btn-banner" href="catalog.html" data-key="viewCatalog">Переглянути каталог</a>
+        </div>
+      </section>
+
+      <section class="section about-section">
+        <h2 data-key="aboutHeading">Про нас</h2>
+        <p class="about-text" data-key="aboutText">Протягом 20 років здійснюємо продаж і заміну якісного автомобільного скла преміум класу світових лідерів.</p>
+      </section>
+
+      <section class="contact-section">
+        <div class="contact-overlay"></div>
+        <div class="contact-grid">
+          <div class="contact-copy">
+            <p class="contact-copy-small" data-key="fillForm">Заповніть форму</p>
+            <p class="contact-copy-text" data-key="contactIntro">і наш менеджер підбере для Вас підходяще автоскло.</p>
+          </div>
+
+          <form class="contact-form">
+            <div class="contact-form-header">
+              <h3 data-key="consultTitle">Отримати консультацію</h3>
+            </div>
+            <label>
+              <span data-key="yourName">Ваше ім'я</span>
+              <input type="text" name="name" placeholder="Ім'я" data-placeholder="namePlaceholder" required />
+            </label>
+            <label>
+              <span data-key="yourPhone">Ваш номер телефону</span>
+              <input type="tel" name="phone" placeholder="+380 67 000 00 00" data-placeholder="phonePlaceholder" required />
+            </label>
+            <label>
+              <span data-key="yourCar">Марка і модель авто</span>
+              <input type="text" name="car" placeholder="Наприклад: Toyota Range Rover" data-placeholder="carPlaceholder" required />
+            </label>
+            <button class="btn btn-primary" type="submit" data-key="send">Надіслати</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="section choose-section">
+        <h2 data-key="chooseHeading">Чому нас вибирають</h2>
+        <div class="features-grid">
+          <div class="feature-card feature-card-1">
+            <p class="feature-text" data-key="feature1Text">20 років здійснюємо продаж і заміну автоскла</p>
+          </div>
+          <div class="feature-card feature-card-2">
+            <p class="feature-text" data-key="feature2Text">Співпрацюємо безпосередньо з виробниками</p>
+          </div>
+          <div class="feature-card feature-card-3">
+            <p class="feature-text" data-key="feature3Text">Вся продукція з логотипами компаній і сертифікована в Україні і світі</p>
+          </div>
+          <div class="feature-card feature-card-4">
+            <p class="feature-text" data-key="feature4Text">Роздрібна та оптова торгівля</p>
+          </div>
+          <div class="feature-card feature-card-5">
+            <p class="feature-text" data-key="feature5Text">Безкоштовна консультація по вибору автоскла</p>
+          </div>
+          <div class="feature-card feature-card-6">
+            <p class="feature-text" data-key="feature6Text">Продаж і установка автоскла з ПДВ</p>
+          </div>
+          <div class="feature-card feature-card-7">
+            <p class="feature-text" data-key="feature7Text">Скло преміум класу світових лідерів</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section partners-section">
+        <h2 data-key="partnersHeading">Наші партнери</h2>
+        <div class="partners-grid">
+          <div class="partner-card"><img src="agc.png" alt="AGC" /></div>
+          <div class="partner-card"><img src="benson.png" alt="Benson" /></div>
+          <div class="partner-card"><img src="fuyao.png" alt="Fuyao" /></div>
+          <div class="partner-card"><img src="guardian.png" alt="Guardian" /></div>
+          <div class="partner-card"><img src="nordglass.png" alt="NordGlass" /></div>
+          <div class="partner-card"><img src="orionglass.png" alt="Orion Glass" /></div>
+          <div class="partner-card"><img src="pgw.png" alt="PGW" /></div>
+          <div class="partner-card"><img src="pilkington.png" alt="Pilkington" /></div>
+          <div class="partner-card"><img src="safeglass.png" alt="SafeGlass" /></div>
+          <div class="partner-card"><img src="sekurit.png" alt="Sekurit" /></div>
+          <div class="partner-card"><img src="shatterprufe.png" alt="Shatterprufe" /></div>
+          <div class="partner-card"><img src="xyg.png" alt="XYG" /></div>
+        </div>
+      </section>
+
+      <section class="contact-section">
+        <div class="contact-overlay"></div>
+        <div class="contact-grid">
+          <div class="contact-copy">
+            <p class="contact-copy-small" data-key="fillForm">Заповніть форму</p>
+            <p class="contact-copy-text" data-key="contactIntro">і наш менеджер підбере для Вас підходяще автоскло.</p>
+          </div>
+
+          <form class="contact-form">
+            <div class="contact-form-header">
+              <h3 data-key="consultTitle">Отримати консультацію</h3>
+            </div>
+            <label>
+              <span data-key="yourName">Ваше ім'я</span>
+              <input type="text" name="name" placeholder="Ім'я" data-placeholder="namePlaceholder" required />
+            </label>
+            <label>
+              <span data-key="yourPhone">Ваш номер телефону</span>
+              <input type="tel" name="phone" placeholder="+380 67 000 00 00" data-placeholder="phonePlaceholder" required />
+            </label>
+            <label>
+              <span data-key="yourCar">Марка і модель авто</span>
+              <input type="text" name="car" placeholder="Наприклад: Toyota Range Rover" data-placeholder="carPlaceholder" required />
+            </label>
+            <button class="btn btn-primary" type="submit" data-key="send">Надіслати</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="section steps-section">
+        <h2 data-key="stepsHeading">Як ми працюємо</h2>
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <p class="step-title" data-key="step1Title">Заявка</p>
+            <p class="step-description" data-key="step1Description">Ви залишаєте заявку на сайті або телефонуєте нам: +38(067)-407-98-94</p>
+          </div>
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <p class="step-title" data-key="step2Title">Дзвінок</p>
+            <p class="step-description" data-key="step2Description">Наш менеджер зв'язується з Вами для уточнення деталей</p>
+          </div>
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <p class="step-title" data-key="step3Title">Часткова оплата</p>
+            <p class="step-description" data-key="step3Description">Оплата % від суми замовлення, щоб ми розуміли що Ви заберете товар.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-number">4</div>
+            <p class="step-title" data-key="step4Title">Доставка</p>
+            <p class="step-description" data-key="step4Description">Товар доставляється транспортною компанією найближчим для Вас відділенням "Нової пошти".</p>
+          </div>
+          <div class="step-card">
+            <div class="step-number">5</div>
+            <p class="step-title" data-key="step5Title">Оплата</p>
+            <p class="step-description" data-key="step5Description">Оплата здійснюється при отриманні.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section map-contact-section">
+        <div class="map-contact-grid">
+          <div class="map-frame">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20538.7269672005!2d24.674409271360575!3d51.19689160000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47243ba677a7c331%3A0x428bd0ca7671e9ff!2z0JLQsNC90LjRhtGP!5e0!3m2!1suk!2sua!4v1711600000000!5m2!1suk!2sua"
+              width="100%"
+              height="100%"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+
+          <div class="contact-details">
+            <h2 data-key="contactsHeading">Контакти</h2>
+            <p data-key="contactsAddress">Волинська обл., с. Воля-Ковельська, вул. Центральна 1</p>
+            <div class="contact-block">
+              <p class="contact-block-title" data-key="contactRetailLabel">Менеджер по роздрібній торгівлі:</p>
+              <p>+38(067)-407-98-94</p>
+              <p>+38(050)-1-447-447</p>
+            </div>
+            <div class="contact-block">
+              <p class="contact-block-title" data-key="contactWholesaleLabel">Менеджер по оптовій торгівлі:</p>
+              <p>+38(067)-812-14-14</p>
+            </div>
+            <div class="contact-block">
+              <p class="contact-block-title" data-key="contactEmailLabel">E-mail:</p>
+              <p><a href="mailto:bosskovel@gmail.com">bosskovel@gmail.com</a></p>
+            </div>
+            <div class="contact-block">
+              <p class="contact-block-title" data-key="scheduleLabel">Графік роботи:</p>
+              <p data-key="scheduleWeekdays">Пн-пт: 09:00 - 18:00</p>
+              <p data-key="scheduleWeekend">Субота, неділя: вихідний</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="callModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="callModalTitle">
+      <div class="modal">
+        <button class="modal-close" id="closeModal" aria-label="Закрити">×</button>
+        <h2 id="callModalTitle" data-key="orderCall">Замовити дзвінок</h2>
+        <p class="modal-description" data-key="modalDescription">Введіть номер телефону, щоб менеджер міг зателефонувати вам.</p>
+        <form id="callForm" class="modal-form">
+          <label>
+            <span data-key="phoneNumber">Номер телефону</span>
+            <input type="tel" name="phone" placeholder="+380 67 000 00 00" required />
+          </label>
+          <div class="modal-buttons">
+            <button class="btn btn-primary" type="submit" data-key="send">Відправити</button>
+            <button class="btn btn-secondary" type="button" id="cancelButton" data-key="cancel">Відмінити</button>
+          </div>
+          <p id="callMessage" class="form-message"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
