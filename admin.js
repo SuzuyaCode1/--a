@@ -9,6 +9,7 @@ const form = document.getElementById("productForm");
 const formMessage = document.getElementById("formMessage");
 const adminList = document.getElementById("adminList");
 const callRequestsList = document.getElementById("callRequestsList");
+const consultationRequestsList = document.getElementById("consultationRequestsList");
 
 const ADMIN_CREDENTIALS = {
   username: "1",
@@ -129,6 +130,39 @@ async function loadCallRequests() {
   }
 }
 
+async function loadConsultationRequests() {
+  if (!consultationRequestsList) return;
+
+  consultationRequestsList.innerHTML = '<div class="empty-state">Завантаження заявок...</div>';
+
+  try {
+    const q = query(collection(db, "consultation_requests"), orderBy("timestamp", "desc"));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      consultationRequestsList.innerHTML = '<div class="empty-state">Поки що немає заявок на консультацію.</div>';
+      return;
+    }
+
+    consultationRequestsList.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const item = document.createElement("div");
+      item.className = "admin-item";
+      item.innerHTML = `
+        <strong>Ім'я:</strong> ${data.name || "-"}<br />
+        <strong>Номер:</strong> ${data.phone || "-"}<br />
+        <strong>Авто:</strong> ${data.car || "-"}<br />
+        <strong>Час:</strong> ${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString('uk-UA') : "-"}
+      `;
+      consultationRequestsList.appendChild(item);
+    });
+  } catch (error) {
+    console.error("Error loading consultation requests:", error);
+    consultationRequestsList.innerHTML = '<div class="empty-state">Не вдалося завантажити заявки.</div>';
+  }
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   const data = new FormData(form);
@@ -167,6 +201,7 @@ loginForm.addEventListener("submit", async (event) => {
     adminSection.classList.remove("hidden");
     renderAdminList();
     await loadCallRequests();
+    await loadConsultationRequests();
     loginMessage.textContent = "";
     return;
   }
