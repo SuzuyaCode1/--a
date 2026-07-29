@@ -118,9 +118,20 @@ function renderAdminList() {
   });
 
   document.querySelectorAll("[data-delete-id]").forEach((button) => {
-    button.addEventListener("click", (event) => {
-      const id = Number(event.currentTarget.getAttribute("data-delete-id"));
-      products = products.filter((item) => item.id !== id);
+    button.addEventListener("click", async (event) => {
+      const id = event.currentTarget.getAttribute("data-delete-id");
+      
+      // Try to delete from Firestore first (if ID looks like Firestore doc ID)
+      try {
+        if (typeof id === 'string' && id.length > 10) {
+          await deleteDoc(doc(db, "products", id));
+        }
+      } catch (error) {
+        console.log("Product not in Firestore or already deleted:", error);
+      }
+
+      // Remove from local list
+      products = products.filter((item) => String(item.id) !== String(id));
       saveProducts();
       renderAdminList();
       formMessage.textContent = "Товар видалено";
@@ -131,6 +142,7 @@ function renderAdminList() {
 async function loadCallRequests() {
   if (!callRequestsList) return;
 
+  const previousScrollTop = callRequestsList.scrollTop;
   callRequestsList.innerHTML = '<div class="empty-state">Завантаження заявок...</div>';
 
   try {
@@ -156,6 +168,8 @@ async function loadCallRequests() {
       callRequestsList.appendChild(item);
     });
 
+    callRequestsList.scrollTop = previousScrollTop;
+
     document.querySelectorAll("[data-accept-call]").forEach((button) => {
       button.addEventListener("click", async (event) => {
         const docId = event.currentTarget.getAttribute("data-accept-call");
@@ -179,6 +193,7 @@ async function loadCallRequests() {
 async function loadConsultationRequests() {
   if (!consultationRequestsList) return;
 
+  const previousScrollTop = consultationRequestsList.scrollTop;
   consultationRequestsList.innerHTML = '<div class="empty-state">Завантаження заявок...</div>';
 
   try {
@@ -204,6 +219,8 @@ async function loadConsultationRequests() {
       `;
       consultationRequestsList.appendChild(item);
     });
+
+    consultationRequestsList.scrollTop = previousScrollTop;
 
     document.querySelectorAll("[data-accept-consultation]").forEach((button) => {
       button.addEventListener("click", async (event) => {
