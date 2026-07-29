@@ -1,4 +1,4 @@
-import { db, collection, getDocs, query, orderBy } from './firebase-config.js';
+import { db, collection, getDocs, query, orderBy, addDoc, serverTimestamp } from './firebase-config.js';
 
 const STORAGE_KEY = "autoGlassCatalog";
 const loginForm = document.getElementById("loginForm");
@@ -10,6 +10,8 @@ const formMessage = document.getElementById("formMessage");
 const adminList = document.getElementById("adminList");
 const callRequestsList = document.getElementById("callRequestsList");
 const consultationRequestsList = document.getElementById("consultationRequestsList");
+const syncCatalogButton = document.getElementById("syncCatalogButton");
+const syncMessage = document.getElementById("syncMessage");
 
 const ADMIN_CREDENTIALS = {
   username: "1",
@@ -40,6 +42,34 @@ const defaultProducts = [
 ];
 
 let products = loadProducts();
+
+// Try to load products from Firestore (public read). If any found, use them.
+async function fetchProductsFromFirestore() {
+  try {
+    const q = query(collection(db, "products"));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const remote = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        remote.push({
+          id: doc.id,
+          title: data.title || "",
+          car: data.car || "",
+          size: data.size || "",
+          warranty: data.warranty || "",
+          price: data.price || 0,
+          installationPrice: data.installationPrice || 0,
+          image: data.image || ""
+        });
+      });
+      products = remote;
+      saveProducts();
+    }
+  } catch (error) {
+    console.warn("Could not fetch products from Firestore:", error);
+  }
+}
 
 function loadProducts() {
   try {
@@ -190,6 +220,49 @@ form.addEventListener("submit", (event) => {
   formMessage.textContent = "Товар додано до каталогу";
 });
 
+// Publish local products to Firestore (skips simple duplicates)
+async function publishProductsToFirestore() {
+  if (!products.length) {
+    syncMessage.textContent = "Немає товарів для синхронізації";
+    return;
+  }
+
+  syncMessage.textContent = "Синхронізація...";
+
+  try {
+    // Fetch existing remote products to avoid simple duplicates
+    const q = query(collection(db, "products"));
+    const snapshot = await getDocs(q);
+    const existing = new Set();
+    snapshot.forEach((d) => {
+      const data = d.data();
+      existing.add((data.title || "") + '||' + (data.car || '') + '||' + (data.size || ''));
+    });
+
+    let added = 0;
+    for (const p of products) {
+      const key = (p.title || '') + '||' + (p.car || '') + '||' + (p.size || '');
+      if (existing.has(key)) continue;
+      await addDoc(collection(db, "products"), {
+        title: p.title,
+        car: p.car,
+        size: p.size,
+        warranty: p.warranty,
+        price: p.price,
+        installationPrice: p.installationPrice,
+        image: p.image,
+        timestamp: serverTimestamp()
+      });
+      added++;
+    }
+
+    syncMessage.textContent = `Синхронізація завершена. Додано: ${added}`;
+  } catch (error) {
+    console.error("Publish to Firestore failed:", error);
+    syncMessage.textContent = "Не вдалося синхронізувати. Перевірте правила безпеки Firestore.";
+  }
+}
+
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const data = new FormData(loginForm);
@@ -200,12 +273,19 @@ loginForm.addEventListener("submit", async (event) => {
     loginSection.classList.add("hidden");
     adminSection.classList.remove("hidden");
     renderAdminList();
+    await fetchProductsFromFirestore();
     await loadCallRequests();
     await loadConsultationRequests();
     loginMessage.textContent = "";
     return;
   }
 
+
+if (syncCatalogButton) {
+  syncCatalogButton.addEventListener('click', async () => {
+    await publishProductsToFirestore();
+  });
+}
   loginMessage.textContent = "Невірний логін або пароль";
 });
 

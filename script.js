@@ -1,3 +1,5 @@
+import { db, collection, getDocs, query, orderBy } from './firebase-config.js';
+
 const STORAGE_KEY = "autoGlassCatalog";
 const productsGrid = document.getElementById("productsGrid");
 
@@ -25,6 +27,34 @@ const defaultProducts = [
 ];
 
 let products = loadProducts();
+
+// Try to load products from Firestore (public read). If any found, use them.
+async function fetchProductsFromFirestore() {
+  try {
+    const q = query(collection(db, "products"));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const remote = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        remote.push({
+          id: doc.id,
+          title: data.title || "",
+          car: data.car || "",
+          size: data.size || "",
+          warranty: data.warranty || "",
+          price: data.price || 0,
+          installationPrice: data.installationPrice || 0,
+          image: data.image || ""
+        });
+      });
+      products = remote;
+      saveProducts();
+    }
+  } catch (error) {
+    console.warn("Could not fetch products from Firestore:", error);
+  }
+}
 
 function loadProducts() {
   try {
@@ -81,4 +111,4 @@ function renderProducts() {
   });
 }
 
-renderProducts();
+fetchProductsFromFirestore().then(() => renderProducts());
