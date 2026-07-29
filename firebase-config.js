@@ -17,10 +17,12 @@ import {
   serverTimestamp,
   getDocs,
   query,
-  orderBy
+  orderBy,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-export { db, collection, addDoc, serverTimestamp, getDocs, query, orderBy };
+export { db, collection, addDoc, serverTimestamp, getDocs, query, orderBy, deleteDoc, doc };

@@ -1,4 +1,4 @@
-import { db, collection, getDocs, query, orderBy, addDoc, serverTimestamp } from './firebase-config.js';
+import { db, collection, getDocs, query, orderBy, addDoc, serverTimestamp, deleteDoc, doc } from './firebase-config.js';
 
 const STORAGE_KEY = "autoGlassCatalog";
 const loginForm = document.getElementById("loginForm");
@@ -10,8 +10,8 @@ const formMessage = document.getElementById("formMessage");
 const adminList = document.getElementById("adminList");
 const callRequestsList = document.getElementById("callRequestsList");
 const consultationRequestsList = document.getElementById("consultationRequestsList");
-const syncCatalogButton = document.getElementById("syncCatalogButton");
-const syncMessage = document.getElementById("syncMessage");
+const callMessage = document.getElementById("callMessage");
+const consultationMessage = document.getElementById("consultationMessage");
 
 const ADMIN_CREDENTIALS = {
   username: "1",
@@ -143,16 +143,32 @@ async function loadCallRequests() {
     }
 
     callRequestsList.innerHTML = "";
-    snapshot.forEach((doc) => {
-      const data = doc.data();
+    snapshot.forEach((docSnapshot) => {
+      const data = docSnapshot.data();
       const item = document.createElement("div");
       item.className = "admin-item";
       item.innerHTML = `
         <strong>Номер:</strong> ${data.phone || "-"}<br />
         <strong>Статус:</strong> ${data.status || "новий"}<br />
-        <strong>Час:</strong> ${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString('uk-UA') : "-"}
+        <strong>Час:</strong> ${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString('uk-UA') : "-"}<br />
+        <button class="btn" type="button" data-accept-call="${docSnapshot.id}" style="margin-top:8px;">Прийняти</button>
       `;
       callRequestsList.appendChild(item);
+    });
+
+    document.querySelectorAll("[data-accept-call]").forEach((button) => {
+      button.addEventListener("click", async (event) => {
+        const docId = event.currentTarget.getAttribute("data-accept-call");
+        try {
+          await deleteDoc(doc(db, "call_requests", docId));
+          callMessage.textContent = "Заявка прийнята і видалена";
+          await loadCallRequests();
+          setTimeout(() => { callMessage.textContent = ""; }, 3000);
+        } catch (error) {
+          console.error("Error deleting call request:", error);
+          callMessage.textContent = "Не вдалося видалити заявку";
+        }
+      });
     });
   } catch (error) {
     console.error("Error loading call requests:", error);
@@ -175,17 +191,33 @@ async function loadConsultationRequests() {
     }
 
     consultationRequestsList.innerHTML = "";
-    snapshot.forEach((doc) => {
-      const data = doc.data();
+    snapshot.forEach((docSnapshot) => {
+      const data = docSnapshot.data();
       const item = document.createElement("div");
       item.className = "admin-item";
       item.innerHTML = `
         <strong>Ім'я:</strong> ${data.name || "-"}<br />
         <strong>Номер:</strong> ${data.phone || "-"}<br />
         <strong>Авто:</strong> ${data.car || "-"}<br />
-        <strong>Час:</strong> ${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString('uk-UA') : "-"}
+        <strong>Час:</strong> ${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString('uk-UA') : "-"}<br />
+        <button class="btn" type="button" data-accept-consultation="${docSnapshot.id}" style="margin-top:8px;">Прийняти</button>
       `;
       consultationRequestsList.appendChild(item);
+    });
+
+    document.querySelectorAll("[data-accept-consultation]").forEach((button) => {
+      button.addEventListener("click", async (event) => {
+        const docId = event.currentTarget.getAttribute("data-accept-consultation");
+        try {
+          await deleteDoc(doc(db, "consultation_requests", docId));
+          consultationMessage.textContent = "Заявка прийнята і видалена";
+          await loadConsultationRequests();
+          setTimeout(() => { consultationMessage.textContent = ""; }, 3000);
+        } catch (error) {
+          console.error("Error deleting consultation request:", error);
+          consultationMessage.textContent = "Не вдалося видалити заявку";
+        }
+      });
     });
   } catch (error) {
     console.error("Error loading consultation requests:", error);
@@ -252,49 +284,6 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
-// Publish local products to Firestore (skips simple duplicates)
-async function publishProductsToFirestore() {
-  if (!products.length) {
-    syncMessage.textContent = "Немає товарів для синхронізації";
-    return;
-  }
-
-  syncMessage.textContent = "Синхронізація...";
-
-  try {
-    // Fetch existing remote products to avoid simple duplicates
-    const q = query(collection(db, "products"));
-    const snapshot = await getDocs(q);
-    const existing = new Set();
-    snapshot.forEach((d) => {
-      const data = d.data();
-      existing.add((data.title || "") + '||' + (data.car || '') + '||' + (data.size || ''));
-    });
-
-    let added = 0;
-    for (const p of products) {
-      const key = (p.title || '') + '||' + (p.car || '') + '||' + (p.size || '');
-      if (existing.has(key)) continue;
-      await addDoc(collection(db, "products"), {
-        title: p.title,
-        car: p.car,
-        size: p.size,
-        warranty: p.warranty,
-        price: p.price,
-        installationPrice: p.installationPrice,
-        image: p.image,
-        timestamp: serverTimestamp()
-      });
-      added++;
-    }
-
-    syncMessage.textContent = `Синхронізація завершена. Додано: ${added}`;
-  } catch (error) {
-    console.error("Publish to Firestore failed:", error);
-    syncMessage.textContent = "Не вдалося синхронізувати. Перевірте правила безпеки Firestore.";
-  }
-}
-
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const data = new FormData(loginForm);
@@ -312,12 +301,6 @@ loginForm.addEventListener("submit", async (event) => {
     return;
   }
 
-
-if (syncCatalogButton) {
-  syncCatalogButton.addEventListener('click', async () => {
-    await publishProductsToFirestore();
-  });
-}
   loginMessage.textContent = "Невірний логін або пароль";
 });
 
