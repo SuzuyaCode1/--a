@@ -193,7 +193,7 @@ async function loadConsultationRequests() {
   }
 }
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const data = new FormData(form);
 
@@ -213,11 +213,43 @@ form.addEventListener("submit", (event) => {
     return;
   }
 
-  products.unshift(newProduct);
-  saveProducts();
-  renderAdminList();
-  form.reset();
-  formMessage.textContent = "Товар додано до каталогу";
+  const submitButton = form.querySelector('button[type="submit"]');
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "Додаємо...";
+
+  // Try to publish directly to Firestore first
+  try {
+    const docRef = await addDoc(collection(db, "products"), {
+      title: newProduct.title,
+      car: newProduct.car,
+      size: newProduct.size,
+      warranty: newProduct.warranty,
+      price: newProduct.price,
+      installationPrice: newProduct.installationPrice,
+      image: newProduct.image,
+      timestamp: serverTimestamp()
+    });
+
+    // Use remote ID and add to local list for immediate UI
+    newProduct.id = docRef.id;
+    products.unshift(newProduct);
+    saveProducts();
+    renderAdminList();
+    form.reset();
+    formMessage.textContent = "Товар додано і опубліковано в каталозі";
+  } catch (error) {
+    // If publishing fails (likely permission), fallback to local storage
+    console.error("Failed to publish product to Firestore:", error);
+    products.unshift(newProduct);
+    saveProducts();
+    renderAdminList();
+    form.reset();
+    formMessage.textContent = "Товар додано локально. Не вдалося опублікувати у Firestore: перевірте правила або автентифікацію";
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
 });
 
 // Publish local products to Firestore (skips simple duplicates)
