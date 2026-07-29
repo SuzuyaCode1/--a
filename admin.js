@@ -298,6 +298,13 @@ loginForm.addEventListener("submit", async (event) => {
     await loadCallRequests();
     await loadConsultationRequests();
     loginMessage.textContent = "";
+
+    // Auto-refresh lists every 3 seconds
+    setInterval(async () => {
+      await loadCallRequests();
+      await loadConsultationRequests();
+    }, 3000);
+
     return;
   }
 
